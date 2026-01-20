@@ -1,42 +1,54 @@
+import numpy as np
+import soundfile as sf
 from TTS.api import TTS
 import glob
 import os
 
-# ----------------------------
-# Configuration
-# ----------------------------
+# =========================
+# CONFIG
+# =========================
 MODEL_NAME = "tts_models/multilingual/multi-dataset/xtts_v2"
-SAMPLES_DIR = "samples/actor1"
-OUTPUT_PATH = "output/output1.wav"
-TEXT = " الصَّوتُ هو الجِسرُ الخَفِيُّ بينَ الفِكرةِ والإحساس، بهِ تتحوَّلُ المعاني الصَّامتة إلى حضورٍ حيٍّ، ويصيرُ ما في الداخل مسموعًا ومؤثِّرًا في العالَم من حولِنا."
+SPEAKER_WAV = glob.glob("samples/actor1/*.wav")  # ✅ multiple samples
 LANGUAGE = "ar"
+OUTPUT_FILE = "output.wav"
+SAMPLE_RATE = 24000
+SILENCE_SECONDS = 0.7
 
-# ----------------------------
-# Load model
-# ----------------------------
+if not SPEAKER_WAV:
+    raise RuntimeError("No wav files found in samples/actor1")
+
+# =========================
+# INIT
+# =========================
 print("Loading model...")
-tts = TTS(MODEL_NAME)
+tts = TTS(model_name=MODEL_NAME)
 print("Model loaded")
 
-# ----------------------------
-# Load speaker samples
-# ----------------------------
-speaker_wavs = glob.glob(os.path.join(SAMPLES_DIR, "*.wav"))
+# =========================
+# TEXT (WITH TASHKEEL)
+# =========================
+sentences = [
+    "الصوتُ هو الجسرُ الهادئُ بين الفكرةِ والإحساس.",
+    "حينَ يخرجُ بصدقٍ.",
+    "يُصبحُ أعمقَ من الكلمات.",
+    "وأقْرَبُ إلى الرّوح."
+]
 
-if not speaker_wavs:
-    raise RuntimeError("No WAV files found in samples folder")
+# =========================
+# SILENCE BUFFER
+# =========================
+silence = np.zeros(int(SAMPLE_RATE * SILENCE_SECONDS), dtype=np.float32)
 
-print(f"Found {len(speaker_wavs)} speaker samples")
+# =========================
+# GENERATION
+# =========================
+audio_parts = []
 
-# ----------------------------
-# Generate speech
-# ----------------------------
-print("Generating voice...")
-tts.tts_to_file(
-    text=TEXT,
-    speaker_wav=speaker_wavs,
-    language=LANGUAGE,
-    file_path=OUTPUT_PATH
-)
+for sentence in sentences:
+    print(f"Generating: {sentence}")
 
-print(f"Done ✅ File saved as: {OUTPUT_PATH}")
+    wav = tts.tts(
+        text=sentence,
+        speaker_wav=SPEAKER_WAV,
+        language=LANGUAGE
+    )
