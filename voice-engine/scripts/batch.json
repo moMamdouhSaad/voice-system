@@ -1,0 +1,21 @@
+{
+    "actor": "actor1",
+    "items": [
+      {
+        "filename": "intro.wav",
+        "script": [
+          { "text": "الصوتُ هو الجسرُ الهادئُ بين الفكرةِ والإحساس.", "pause_after": 0.6 },
+          { "text": "حينَ يخرجُ بصدق، يصبحُ أعمقَ من الكلمات.", "pause_after": 0.6 },
+          { "text": "وأقربَ إلى الرّوح.", "pause_after": 1.0 }
+        ]
+      },
+      {
+        "filename": "outro.wav",
+        "script": [
+          { "text": "هذا الصوت ليس مجرد كلمات.", "pause_after": 0.5 },
+          { "text": "إنه حضور.", "pause_after": 1.2 }
+        ]
+      }
+    ]
+  }
+  
