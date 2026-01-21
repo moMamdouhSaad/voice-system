@@ -20,6 +20,9 @@ def tts(request: TTSRequest):
     if not request.text.strip():
         raise HTTPException(status_code=400, detail="Text cannot be empty")
 
+    if not request.language:
+        raise HTTPException(status_code=400, detail="Language is required")
+
     try:
         audio_path = controller.speak(
             text=request.text,
@@ -29,12 +32,13 @@ def tts(request: TTSRequest):
 
         return {
             "status": "success",
-            "audio_path": audio_path
-}
+            "audio_path": audio_path,
+            "language": request.language
+        }
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
+
 
 @app.get("/speakers")
 def list_speakers():
